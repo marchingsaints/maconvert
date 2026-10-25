@@ -1,0 +1,8 @@
+# Build output (recreate with ./build.sh)
+build/
+
+# macOS
+.DS_Store
+
+# Local tool settings
+.claude/settings.local.json

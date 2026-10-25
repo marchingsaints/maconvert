@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleName</key><string>MacConvert</string>
+	<key>CFBundleDisplayName</key><string>MacConvert</string>
+	<key>CFBundleIdentifier</key><string>com.judedias.MacConvert</string>
+	<key>CFBundleExecutable</key><string>MacConvert</string>
+	<key>CFBundleIconFile</key><string>AppIcon</string>
+	<key>CFBundlePackageType</key><string>APPL</string>
+	<key>CFBundleShortVersionString</key><string>0.5.0</string>
+	<key>CFBundleVersion</key><string>7</string>
+	<key>LSMinimumSystemVersion</key><string>14.0</string>
+	<key>LSUIElement</key><true/>
+	<key>NSHighResolutionCapable</key><true/>
+	<key>NSPrincipalClass</key><string>NSApplication</string>
+	<key>NSAppleEventsUsageDescription</key><string>MacConvert asks Word, Excel, PowerPoint, Pages, Keynote or Numbers to export your document as a PDF.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key><string>com.judedias.MacConvert.handoff</string>
+			<key>CFBundleURLSchemes</key><array><string>macconvert</string></array>
+		</dict>
+	</array>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key><string>Media</string>
+			<key>CFBundleTypeRole</key><string>Viewer</string>
+			<key>LSHandlerRank</key><string>Alternate</string>
+			<key>LSItemContentTypes</key><array><string>public.image</string><string>public.movie</string><string>public.audio</string><string>com.adobe.pdf</string></array>
+		</dict>
+	</array>
+</dict>
+</plist>
