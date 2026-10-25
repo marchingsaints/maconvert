@@ -17,6 +17,7 @@ Needs the Xcode Command Line Tools and Homebrew's `webp` and `lame` (`brew insta
 ```bash
 ./build.sh            # → build/MacConvert.app and build/MacConvert.dmg
 ./build.sh --install  # also copies to /Applications and launches it
+scripts/make-dmg.sh   # → build/MacConvert-<version>.dmg, a styled installer to share
 ```
 
 After installing an update, relaunch Finder (Option-right-click its Dock icon → Relaunch) so it loads the new extension.

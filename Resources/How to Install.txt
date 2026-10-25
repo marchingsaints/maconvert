@@ -1,0 +1,33 @@
+MacConvert: How to Install
+==========================
+
+Needs a Mac with Apple Silicon (M1 or newer) and macOS 14 Sonoma or later.
+
+1. Drag MacConvert onto the Applications folder in this window.
+
+2. Open MacConvert from Applications.
+   The first time, macOS will say it can't check the app for malicious
+   software, because it isn't signed with an Apple Developer ID yet.
+   To allow it once:
+     • Click "Done" (or "OK") on that message.
+     • Open System Settings › Privacy & Security.
+     • Scroll down to the message about MacConvert and click "Open Anyway".
+     • Confirm with your password or Touch ID, then click "Open".
+   You only need to do this once.
+
+3. In the MacConvert window, click "Turn On" to add Convert, Optimize,
+   Compress and Combine to Finder's right-click menu.
+   (Or tick MacConvert in System Settings › General › Login Items &
+   Extensions › Finder, or › Privacy & Security › Extensions on Sonoma.)
+
+4. Right-click any image, video, audio file, PDF or Office document in Finder.
+
+Tips
+• Drop files on the MacConvert icon in the menu bar to convert them.
+• Settings (menu bar icon › Settings…) chooses where converted files go.
+• Converting Word, Excel or PowerPoint files to PDF uses Microsoft Office,
+  or Pages, Keynote or Numbers, if installed.
+• After updating MacConvert, relaunch Finder (Option-right-click its Dock
+  icon › Relaunch) so the right-click menu picks up the new version.
+
+Everything happens on your Mac. Nothing is uploaded.
