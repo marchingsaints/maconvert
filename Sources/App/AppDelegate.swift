@@ -67,7 +67,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         guard statusItem == nil else { return }
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        item.button?.image = NSImage(systemSymbolName: "arrow.triangle.2.circlepath", accessibilityDescription: "MacConvert")
+        item.button?.image = MenuBarIcon.image
         item.button?.imagePosition = .imageLeading
         item.button?.toolTip = "MacConvert: drop files here to convert them"
         let menu = NSMenu()
