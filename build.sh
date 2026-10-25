@@ -43,7 +43,9 @@ cp Resources/Extension-Info.plist "$EXT/Contents/Info.plist"
 
 echo "› Rendering icon"
 ICONSET="$BUILD/AppIcon.iconset"; mkdir -p "$ICONSET"
-swift scripts/make-icon.swift "$BUILD/icon.png"
+# The newest image in Icon/ is the artwork; without one, the built-in icon is drawn.
+ICON_ART=$(ls -t Icon/*.{png,jpg,jpeg}(N) 2>/dev/null | head -1)
+swift scripts/make-icon.swift "$BUILD/icon.png" ${ICON_ART:+"$ICON_ART"}
 for s in 16 32 128 256 512; do
   sips -z $s $s "$BUILD/icon.png" --out "$ICONSET/icon_${s}x${s}.png" >/dev/null
   sips -z $((s*2)) $((s*2)) "$BUILD/icon.png" --out "$ICONSET/icon_${s}x${s}@2x.png" >/dev/null

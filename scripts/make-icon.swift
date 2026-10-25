@@ -1,4 +1,6 @@
-// Renders the app icon to a 1024px PNG: swift scripts/make-icon.swift out.png
+// Renders the app icon to a 1024px PNG: swift scripts/make-icon.swift out.png [artwork]
+// With artwork (any square image), it's placed in the standard macOS rounded tile;
+// without, the original gradient-and-arrows icon is drawn.
 import AppKit
 
 let size: CGFloat = 1024
@@ -14,8 +16,21 @@ ctx.setShadow(offset: CGSize(width: 0, height: -12), blur: 28, color: NSColor.bl
 ctx.addPath(path); ctx.setFillColor(NSColor.black.cgColor); ctx.fillPath()
 ctx.restoreGState()
 
+let artwork = CommandLine.arguments.count > 2 ? NSImage(contentsOfFile: CommandLine.arguments[2]) : nil
 ctx.saveGState()
 ctx.addPath(path); ctx.clip()
+if let artwork {
+    // Fill the tile with the artwork, cropped to a centred square if it isn't one.
+    let side = min(artwork.size.width, artwork.size.height)
+    let source = NSRect(x: (artwork.size.width - side) / 2, y: (artwork.size.height - side) / 2, width: side, height: side)
+    NSGraphicsContext.current?.imageInterpolation = .high
+    artwork.draw(in: body, from: source, operation: .copy, fraction: 1)
+    ctx.restoreGState()
+    image.unlockFocus()
+    let rep = NSBitmapImageRep(data: image.tiffRepresentation!)!
+    try! rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: CommandLine.arguments[1]))
+    exit(0)
+}
 let colors = [NSColor(red: 0.36, green: 0.42, blue: 1.0, alpha: 1).cgColor,
               NSColor(red: 0.11, green: 0.78, blue: 0.86, alpha: 1).cgColor] as CFArray
 let gradient = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB), colors: colors, locations: [0, 1])!
