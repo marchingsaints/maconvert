@@ -31,7 +31,6 @@ final class FinderSync: FIFinderSync {
         if let kind, !targets.isEmpty { addConvertItems(to: menu, kind: kind, targets: targets) }
         if let combineTitle {
             let combine = NSMenuItem(title: combineTitle, action: #selector(combine(_:)), keyEquivalent: "")
-            combine.image = NSImage(systemSymbolName: "doc.on.doc", accessibilityDescription: nil)
             menu.addItem(combine)
         }
         return menu
@@ -39,7 +38,6 @@ final class FinderSync: FIFinderSync {
 
     private func addConvertItems(to menu: NSMenu, kind: MediaKind, targets: [OutputFormat]) {
         let convert = NSMenuItem(title: "Convert to", action: nil, keyEquivalent: "")
-        convert.image = NSImage(systemSymbolName: "arrow.triangle.2.circlepath", accessibilityDescription: nil)
         let sub = NSMenu(title: "Convert to")
         for (i, format) in targets.enumerated() {
             // From a video, audio formats mean "keep just the soundtrack"; from a PDF, images sit between documents and text.
@@ -58,7 +56,6 @@ final class FinderSync: FIFinderSync {
 
         if let title = FormatCatalog.optimizeTitle(for: kind) {
             let optimize = NSMenuItem(title: title, action: #selector(optimize(_:)), keyEquivalent: "")
-            optimize.image = NSImage(systemSymbolName: kind == .image ? "wand.and.stars" : "arrow.down.right.and.arrow.up.left", accessibilityDescription: nil)
             menu.addItem(optimize)
         }
     }
