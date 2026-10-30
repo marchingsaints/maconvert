@@ -192,6 +192,22 @@ final class ConvertModel: ObservableObject {
         return size
     }
 
+    /// The title bar text, e.g. "Convert Image", "Compress Video", "Combine into PDF".
+    var windowTitle: String {
+        let many = files.count > 1
+        switch (mode, kind) {
+        case (.combine, _): return "Combine into PDF"
+        case (.optimize, .image): return many ? "Optimize Images" : "Optimize Image"
+        case (.optimize, .video): return many ? "Compress Videos" : "Compress Video"
+        case (.optimize, _): return many ? "Compress PDFs" : "Compress PDF"
+        case (_, .image): return many ? "Convert Images" : "Convert Image"
+        case (_, .video): return many ? "Convert Videos" : "Convert Video"
+        case (_, .audio): return many ? "Convert Audio Files" : "Convert Audio"
+        case (_, .pdf): return many ? "Convert PDFs" : "Convert PDF"
+        case (_, .office): return many ? "Convert Documents to PDF" : "Convert Document to PDF"
+        }
+    }
+
     var actionTitle: String {
         switch mode {
         case .convert: "Convert"
