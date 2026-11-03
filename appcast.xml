@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>MacConvert</title>
+<!--ITEMS-->
+    <item>
+      <title>Version 0.5.2</title>
+      <sparkle:version>9</sparkle:version>
+      <sparkle:shortVersionString>0.5.2</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <pubDate>Tue, 03 Nov 2026 02:26:23 +0000</pubDate>
+      <description><![CDATA[Adds automatic updates (Settings > Check for updates automatically, and Check for Updates… in the menu bar menu), a credit line in About, and fixes a freeze on first launch.]]></description>
+      <enclosure url="https://github.com/marchingsaints/maconvert/releases/download/v0.5.2/MacConvert-0.5.2.dmg" sparkle:edSignature="erLh5NCRMvpc6NlU07AFaRixIXezNIKnXwmBsnbWzZGk5S8DjrRi1v3GSUrhcaIDwDhPjkrglr90U47HKAvCDw==" length="14664745" type="application/octet-stream"/>
+    </item>
+  </channel>
+</rss>
