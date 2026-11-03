@@ -3,7 +3,7 @@ import SwiftUI
 /// First launch: one switch to flip, then you're done.
 struct OnboardingView: View {
     let finish: () -> Void
-    @State private var enabled = FinderIntegration.isEnabled
+    @State private var enabled = false
     @State private var triedEnabling = false
 
     var body: some View {
@@ -56,16 +56,18 @@ struct OnboardingView: View {
         .background(VisualEffect(material: .windowBackground).ignoresSafeArea())
         .animation(.snappy, value: enabled)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
-            enabled = FinderIntegration.isEnabled
+            FinderIntegration.check { enabled = $0 }
         }
+        .onAppear { FinderIntegration.check { enabled = $0 } }
     }
 
     private func turnOn() {
-        FinderIntegration.enable()
-        enabled = FinderIntegration.isEnabled
-        if !enabled {
-            triedEnabling = true
-            FinderIntegration.openSystemSettings()
+        FinderIntegration.enable { on in
+            enabled = on
+            if !on {
+                triedEnabling = true
+                FinderIntegration.openSystemSettings()
+            }
         }
     }
 }

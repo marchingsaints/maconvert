@@ -18,8 +18,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
             .receive(on: DispatchQueue.main).sink { [weak self] _ in self?.updateStatusItem() }.store(in: &observers)
 
-        if !FinderIntegration.isEnabled || !UserDefaults.standard.bool(forKey: "onboarded") {
+        // pluginkit can be slow on a Mac that has never run the extension, so it is asked off the main thread.
+        if !UserDefaults.standard.bool(forKey: "onboarded") {
             showOnboarding()
+        } else {
+            FinderIntegration.check { [weak self] on in if !on { self?.showOnboarding() } }
         }
     }
 
@@ -177,6 +180,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         NSApp.activate(ignoringOtherApps: true)
         let credits = NSMutableAttributedString(string: "Converts and optimizes files right from Finder, entirely on your Mac.\n\n",
                                                 attributes: [.font: NSFont.systemFont(ofSize: 11), .foregroundColor: NSColor.labelColor])
+        credits.append(NSAttributedString(string: "Designed and built by Jude Dias\n\n",
+                                          attributes: [.font: NSFont.systemFont(ofSize: 11, weight: .medium), .foregroundColor: NSColor.labelColor]))
         let notice = """
         Includes open-source software:
         FFmpeg (LGPL 2.1) · LAME (LGPL 2) · mpg123 (LGPL 2.1) · libwebp (BSD) · libvpx (BSD) · Opus (BSD)
@@ -245,13 +250,21 @@ final class DropTarget: NSView {
 enum FinderIntegration {
     static var extensionID: String { (Bundle.main.bundleIdentifier ?? "com.judedias.MacConvert") + ".FinderExtension" }
 
-    /// pluginkit lists enabled extensions with a leading "+".
-    static var isEnabled: Bool {
-        pluginkit(["-m", "-i", extensionID]).trimmingCharacters(in: .whitespaces).hasPrefix("+")
+    /// pluginkit lists enabled extensions with a leading "+". It runs off the main thread with a
+    /// time limit, so a slow first run can never freeze the app.
+    static func check(_ done: @escaping @MainActor (Bool) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let on = pluginkit(["-m", "-i", extensionID]).trimmingCharacters(in: .whitespaces).hasPrefix("+")
+            Task { @MainActor in done(on) }
+        }
     }
 
-    static func enable() {
-        _ = pluginkit(["-e", "use", "-i", extensionID])
+    static func enable(_ done: @escaping @MainActor (Bool) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            _ = pluginkit(["-e", "use", "-i", extensionID])
+            let on = pluginkit(["-m", "-i", extensionID]).trimmingCharacters(in: .whitespaces).hasPrefix("+")
+            Task { @MainActor in done(on) }
+        }
     }
 
     static func openSystemSettings() {
@@ -265,8 +278,10 @@ enum FinderIntegration {
         let pipe = Pipe()
         p.standardOutput = pipe
         p.standardError = Pipe()
+        let finished = DispatchSemaphore(value: 0)
+        p.terminationHandler = { _ in finished.signal() }
         do { try p.run() } catch { return "" }
-        p.waitUntilExit()
+        if finished.wait(timeout: .now() + 5) == .timedOut { p.terminate(); return "" }
         return String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
     }
 }

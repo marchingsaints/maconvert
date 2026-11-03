@@ -9,7 +9,7 @@ struct SettingsView: View {
     @State private var reveal = Preferences.revealWhenDone
     @State private var menuBar = Preferences.showInMenuBar
     @State private var login = Preferences.openAtLogin
-    @State private var finderOn = FinderIntegration.isEnabled
+    @State private var finderOn = false
     @State private var resetDone = false
 
     var body: some View {
@@ -75,9 +75,10 @@ struct SettingsView: View {
         .frame(width: 460)
         .fixedSize(horizontal: false, vertical: true)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
-            finderOn = FinderIntegration.isEnabled
+            FinderIntegration.check { finderOn = $0 }
             login = Preferences.openAtLogin
         }
+        .onAppear { FinderIntegration.check { finderOn = $0 } }
     }
 
     private func chooseFolder() {
