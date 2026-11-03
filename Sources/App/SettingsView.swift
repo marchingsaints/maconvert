@@ -11,6 +11,7 @@ struct SettingsView: View {
     @State private var login = Preferences.openAtLogin
     @State private var finderOn = false
     @State private var resetDone = false
+    @State private var autoUpdate = true
 
     var body: some View {
         Form {
@@ -46,6 +47,8 @@ struct SettingsView: View {
                     Text("To get back here, open MacConvert from Applications or Spotlight.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
+                Toggle("Check for updates automatically", isOn: $autoUpdate)
+                    .onChange(of: autoUpdate) { Updater.shared.automaticChecks = $0 }
                 LabeledContent("Remembered options") {
                     Button(resetDone ? "Reset ✓" : "Reset") {
                         Preferences.resetRememberedOptions()
@@ -78,7 +81,7 @@ struct SettingsView: View {
             FinderIntegration.check { finderOn = $0 }
             login = Preferences.openAtLogin
         }
-        .onAppear { FinderIntegration.check { finderOn = $0 } }
+        .onAppear { FinderIntegration.check { finderOn = $0 }; autoUpdate = Updater.shared.automaticChecks }
     }
 
     private func chooseFolder() {

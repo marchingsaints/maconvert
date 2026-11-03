@@ -38,3 +38,7 @@ On first launch, click **Turn On** to enable the Finder extension (or tick MacCo
 ## Distribution later
 
 Signing is ad-hoc (runs on this Mac only). To share it: get a Developer ID, swap `--sign -` in `build.sh` for that identity with `--options runtime`, notarize with `xcrun notarytool`, and build libwebp/LAME as universal binaries so Intel Macs work too. LAME is LGPL: ship it as a dynamic library (or the app's object files) to stay compliant.
+
+## Updates
+
+Installed copies check `appcast.xml` (published from this repo) once a day with [Sparkle](https://sparkle-project.org) and offer to install newer releases. To publish one: bump the version in `Resources/App-Info.plist`, commit and push, then run `scripts/release.sh "What's new"`. The update-signing key lives in the maintainer's Keychain (`Vendor/Sparkle/bin/generate_keys -x file` exports a backup).

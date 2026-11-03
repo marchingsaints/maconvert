@@ -12,13 +12,15 @@ BUILD="build"
 APP="$BUILD/MacConvert.app"
 EXT="$APP/Contents/PlugIns/FinderExtension.appex"
 SWIFTFLAGS=(-O -target "$TARGET" -swift-version 5)
+SPARKLE="Vendor/Sparkle"
 
 rm -rf "$BUILD"
-mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$EXT/Contents/MacOS"
+mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APP/Contents/Frameworks" "$EXT/Contents/MacOS"
 
 echo "› Compiling app"
 swiftc "${SWIFTFLAGS[@]}" -module-name MacConvert \
   -import-objc-header Sources/ConversionKit/CWebP.h -I "$WEBP/include" -I "$LAME/include" \
+  -F "$SPARKLE" -framework Sparkle -Xlinker -rpath -Xlinker @executable_path/../Frameworks \
   Sources/App/*.swift Sources/ConversionKit/**/*.swift Sources/Shared/*.swift \
   "$WEBP/lib/libwebp.a" "$WEBP/lib/libsharpyuv.a" "$LAME/lib/libmp3lame.a" "$MPG123/lib/libmpg123.a" -lz \
   -o "$APP/Contents/MacOS/MacConvert"
@@ -31,6 +33,8 @@ swiftc "${SWIFTFLAGS[@]}" -module-name FinderExtension \
 # FFmpeg ships as its own executable beside the app's (see Vendor/ffmpeg/README.md).
 cp Vendor/ffmpeg/ffmpeg "$APP/Contents/MacOS/ffmpeg"
 mkdir -p "$APP/Contents/Resources/Licenses"
+ditto "$SPARKLE/Sparkle.framework" "$APP/Contents/Frameworks/Sparkle.framework"
+cp "$SPARKLE/LICENSE.txt" "$APP/Contents/Resources/Licenses/Sparkle-MIT.txt"
 cp Vendor/ffmpeg/LICENSE.txt "$APP/Contents/Resources/Licenses/FFmpeg-LGPL.txt"
 cp "$LAME/COPYING" "$APP/Contents/Resources/Licenses/LAME-LGPL.txt"
 cp "$MPG123/COPYING" "$APP/Contents/Resources/Licenses/mpg123-LGPL.txt"
@@ -56,6 +60,7 @@ iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/AppIcon.icns"
 # swaps "-" for a Developer ID identity plus notarization.
 echo "› Signing"
 codesign --force --sign - --entitlements Resources/Extension.entitlements "$EXT"
+codesign --force --sign - --deep "$APP/Contents/Frameworks/Sparkle.framework"
 codesign --force --sign - "$APP/Contents/MacOS/ffmpeg"
 codesign --force --sign - "$APP"
 

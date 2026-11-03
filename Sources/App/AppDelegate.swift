@@ -13,6 +13,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         updateStatusItem()
+        _ = Updater.shared
+        Updater.refreshFinderAfterUpdate()
         // Menu bar progress follows running jobs; the icon can be turned off in Settings.
         JobCenter.shared.$jobs.sink { [weak self] _ in DispatchQueue.main.async { self?.refreshProgress() } }.store(in: &observers)
         NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
@@ -137,6 +139,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(.separator())
         menu.addItem(withTitle: "Settings…", action: #selector(showSettings), keyEquivalent: ",").target = self
         menu.addItem(withTitle: "About MacConvert", action: #selector(showAbout), keyEquivalent: "").target = self
+        menu.addItem(withTitle: "Check for Updates…", action: #selector(checkForUpdates), keyEquivalent: "").target = self
         menu.addItem(.separator())
         menu.addItem(withTitle: "Quit MacConvert", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
     }
@@ -176,6 +179,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         settingsWindow?.makeKeyAndOrderFront(nil)
     }
 
+    @objc private func checkForUpdates() { Updater.shared.checkForUpdates() }
+
     @objc private func showAbout() {
         NSApp.activate(ignoringOtherApps: true)
         let credits = NSMutableAttributedString(string: "Converts and optimizes files right from Finder, entirely on your Mac.\n\n",
@@ -185,7 +190,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let notice = """
         Includes open-source software:
         FFmpeg (LGPL 2.1) · LAME (LGPL 2) · mpg123 (LGPL 2.1) · libwebp (BSD) · libvpx (BSD) · Opus (BSD)
-        Licence texts are in MacConvert.app/Contents/Resources/Licenses.
+        Updates by Sparkle (MIT). Licence texts are in MacConvert.app/Contents/Resources/Licenses.
         """
         credits.append(NSAttributedString(string: notice, attributes: [.font: NSFont.systemFont(ofSize: 10), .foregroundColor: NSColor.secondaryLabelColor]))
         NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
